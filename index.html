@@ -17,13 +17,22 @@
     </style>
   </head>
   <body>
-    <h1>My site</h1>
+    <h1>Payment order generator</h1>
     <form
       onsubmit="handleGeneratePaymentOrder(event, this)"
       class="generate-payment-order"
-      placeholder="Hola"
+      placeholder="foo"
     >
-      <span>Generate payment order:</span>
+      <span>MYMOID credentials:</span>
+      api url:
+      <input type="text" name="apiUrl" placeholder="apiUrl" value="https://api.sta.mymoid.com"/>
+      appId:
+      <input type="text" name="appId" placeholder="appId" />
+      appSecret:
+      <input type="text" name="appSecret" placeholder="appSecret" />
+      <br />
+      <br />
+      <span>Payment order information:</span>
       <input type="text" name="concept" placeholder="Concept" />
       <input type="text" name="reference" placeholder="Reference" />
       <input type="text" name="amount" placeholder="Amount" />
@@ -33,14 +42,15 @@
     <script>
       function handleGeneratePaymentOrder(event, form) {
         event.preventDefault();
-        fetch("https://sandbox.mymoid.com/views/button/order", {
+        var encodedStringCredentials = btoa(form.appId.value+ ":" +form.appSecret.value)
+        fetch(`${form.apiUrl.value}/views/button/order`, {
           method: "post",
           headers: {
             "Content-Type": "application/json",
             // Replace with your generated token:
             // https://apidocumentation.mymoid.com/#authentication
             Authorization:
-              "Basic YmIyODc4MGM1NTk5M2JiMGYzMTAxMTEwMzA5NzhkODU3ZTNlNmNjOTk5NTIxMWFiMGZmODk1Yzk1NDFmMDA5ODo3M2U0NjUwNzM1YzM0NTE5MGQ5ZWIyYTgzOGYwNjdiZjA2MjI0MjhmODkzMjUxZjU0MTg2NzI4MGIzMjE2M2Qw"
+              `Basic ${encodedStringCredentials}`
           },
           body: JSON.stringify({
             currency: "EUR",
